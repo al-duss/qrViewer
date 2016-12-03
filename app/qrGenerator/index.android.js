@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react'
 import QRCode from 'react-native-qrcode';
 
@@ -30,7 +24,7 @@ class qrGenerator extends Component {
         <QRCode
           value={this.state.text}
           size={200}
-          bgColor='purple'
+          bgColor='#0099e6'
           fgColor='white'/>
       </View>
     );
