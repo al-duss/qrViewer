@@ -1,24 +1,44 @@
 import React, { Component } from 'react'
 import QRCode from 'react-native-qrcode';
-
 import {
     AppRegistry,
     StyleSheet,
     View,
     TextInput
 } from 'react-native';
+import TimerMixin from 'react-timer-mixin';
+
+var data = require('./data/stringsData.json');
 
 class qrGenerator extends Component {
   state = {
-    text: 'http://facebook.github.io/react-native/',
+    counter:0,
+    text: data[0].text,
   };
+
+  componentWillMount(){
+    let timeCount;
+     TimerMixin.setInterval( () => { 
+       if(this.state.counter == 4){
+          timeCount= 0
+        }
+        else{
+            timeCount= this.state.counter+1
+        }
+      this.setState({
+        counter: timeCount,
+        text:data[timeCount].text
+      })
+    }, 60000);
+        //console.log()
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <TextInput
           style={styles.input}
-          onChangeText={(text) => this.setState({text: text})}
+          //onChangeText={(text) => this.setState({text: text})}
           value={this.state.text}
         />
         <QRCode
