@@ -4,6 +4,7 @@ import threading
 import sys
 import datetime
 import qrdecode.qrdecode
+import time
 
 def take_screenshot(counter, frame, minute):
     file_name = str(counter) + "qr.jpg"
@@ -12,7 +13,6 @@ def take_screenshot(counter, frame, minute):
 
 cap = cv2.VideoCapture(0)
 current_minute = 0
-i = 0
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
@@ -25,9 +25,15 @@ while(True):
 
     if current_minute != now.minute:
         current_minute = now.minute
-        take_screenshot(i, frame, now.minute)
+        img_prefix = int(time.time() * 1000)
+        take_screenshot(img_prefix, frame, now.minute)
 
-    i += 1
+    #or smaller time? like 10 seconds?
+    # if current_minute != now.second and now.second % 10 == 0:
+    #     current_minute = now.second
+    #     img_prefix = int(time.time() * 1000)
+    #     take_screenshot(img_prefix, frame, now.minute)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         print "Exiting..."
         break
