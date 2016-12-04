@@ -7,16 +7,39 @@ import {
     TextInput
 } from 'react-native';
 import TimerMixin from 'react-timer-mixin';
-
+var bcrypt = require('react-native-bcrypt');
+var salt = require('./data/salt.json');
 var data = require('./data/stringsData.json');
 
+const startDate = new Date("2016-12-02 00:00:00");
+
 class qrGenerator extends Component {
-  state = {
-    counter:0,
-    text: data[0].text,
-  };
+
+  constructor(){
+    super();
+
+    var currentDate = new Date();
+    var timeElapsed = currentDate - startDate;
+    var saltId = (parseInt(timeElapsed/60000))%2657;
+
+    this.state = {
+      counter:0,
+      text: data[0].text,
+      hash:bcrypt.hashSync(data[0].text, salt[saltId])
+    };
+  }
 
   componentWillMount(){
+
+    var currentDate = new Date();
+    var timeElapsed = currentDate - startDate;
+    var saltId = (parseInt(timeElapsed/60000))%2657;
+
+    console.log(startDate);
+    console.log(currentDate);
+    console.log(saltId);
+    console.log(salt[saltId])
+
     let timeCount;
      TimerMixin.setInterval( () => { 
        if(this.state.counter == 4){
@@ -27,9 +50,12 @@ class qrGenerator extends Component {
         }
       this.setState({
         counter: timeCount,
-        text:data[timeCount].text
+        text:data[timeCount].text,
+        hash:bcrypt.hashSync(data[timeCount].text, salt[saltId])
       })
-    }, 60000);
+    },30000);
+
+    // 60000 - 1 minute
         //console.log()
   }
 
@@ -41,8 +67,13 @@ class qrGenerator extends Component {
           //onChangeText={(text) => this.setState({text: text})}
           value={this.state.text}
         />
+        <TextInput
+          style={styles.input}
+          //onChangeText={(text) => this.setState({text: text})}
+          value={this.state.hash}
+        />
         <QRCode
-          value={this.state.text}
+          value={this.state.hash}
           size={200}
           bgColor='#0099e6'
           fgColor='white'/>
