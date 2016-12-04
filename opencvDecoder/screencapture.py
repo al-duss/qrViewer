@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import threading
 import sys
 import datetime
 import qrdecode.qrdecode
