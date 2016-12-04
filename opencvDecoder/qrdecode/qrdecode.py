@@ -12,6 +12,7 @@ def decode_qr(path, minute):
 
     with open(db_path, 'r') as db:
         db = json.load(db)
+        #Here replace the "0" with minute once db is set up
         text = db.get("0", "")
         if text == qr.data:
             print "VALID"
