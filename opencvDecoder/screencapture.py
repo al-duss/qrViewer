@@ -6,6 +6,10 @@ import qrdecode.qrdecode
 import time
 import os
 
+d = datetime.datetime(2016, 12, 2, 00,00)
+t = datetime.datetime.now()
+i = int((t-d).total_seconds()/60)%2657
+
 def take_screenshot(counter, frame, minute):
     file_name = str(counter) + "qr.jpg"
     cv2.imwrite(file_name, frame)
