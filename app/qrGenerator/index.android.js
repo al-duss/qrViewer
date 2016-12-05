@@ -9,7 +9,7 @@ import {
 import TimerMixin from 'react-timer-mixin';
 var bcrypt = require('react-native-bcrypt');
 var salt = require('./data/salt.json');
-var data = require('./data/stringsData.json');
+//var data = require('./data/stringsData.json');
 
 const startDate = new Date("2016-12-02 00:00:00");
 
@@ -24,13 +24,13 @@ class qrGenerator extends Component {
 
     this.state = {
       counter:0,
-      text: data[0].text,
-      hash:bcrypt.hashSync(data[0].text, salt[saltId])
+      data:[]
+      //hash:bcrypt.hashSync(data[0].text, salt[saltId])
     };
   }
 
   componentWillMount(){
-
+    this.getData()
     var currentDate = new Date();
     var timeElapsed = currentDate - startDate;
     var saltId = (parseInt(timeElapsed/60000))%2657;
@@ -50,14 +50,23 @@ class qrGenerator extends Component {
         }
       this.setState({
         counter: timeCount,
-        text:data[timeCount].text,
-        hash:bcrypt.hashSync(data[timeCount].text, salt[saltId])
+        text:this.state.data[timeCount],
+       // hash:bcrypt.hashSync(data[timeCount].text, salt[saltId])
       })
     },30000);
 
     // 60000 - 1 minute
         //console.log()
   }
+
+  getData(){
+   return fetch('http://192.168.2.17:5000/')
+        .then(res => res.json())
+        .then(json => dispatch({
+            console.log(json);});
+
+  }
+
 
   render() {
     return (
