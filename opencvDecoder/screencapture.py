@@ -45,19 +45,16 @@ def decode_qr(path, minute, salt):
         print "VALID"
     else:
         alarm += 1
-        if (alarm > 2):
+        if (alarm > 5):
             alarm = 0
-            #showAlert()
+            showAlert()
         print "INVALID"
 
 def hashText(text, salt):
     with open('salt.json', 'r') as db:
         db = json.load(db)
         word = db.get(str(salt) ,"")
-        #hashi = HMAC.new(word)
         return str(HMAC.new(str(word),str(text),SHA256).hexdigest())
-        #return hmac.new(word, text, sha256).hexdigest()
-        #return hashlib.sha512(text+word).hexdigest()
 
 def showAlert():
     alert = Image.open("alert.jpg")
