@@ -1,8 +1,7 @@
 from PIL import Image
 import cv2
 import datetime
-from hashlib import sha512
-import hmac
+from Crypto.Hash import SHA256, HMAC
 import json
 import numpy as np
 import os
@@ -21,7 +20,8 @@ def take_screenshot(counter, frame, minute, salt):
     os.remove(file_name)
 
 def getDB():
-    req = urllib2.Request("http://127.0.0.1:5000/")
+    req = urllib2.Request("http://192.168.43.200:5000/")
+    #req = urllib2.Request("http://127.0.0.1:5000/")
     opener = urllib2.build_opener()
     f = opener.open(req)
     data = json.loads(f.read())
@@ -37,24 +37,26 @@ def decode_qr(path, minute, salt):
     with open('db.json', 'r') as db:
         db = json.load(db)
     time = str(minute)
-    text = db.get(time, "")
+    text = str(db.get(time, ""))
     hashed = hashText(text, salt)
+    print hashed
     if (hashed == qr.data):
         alarm = 0
         print "VALID"
     else:
         alarm += 1
-        print alarm
         if (alarm > 2):
             alarm = 0
-            showAlert()
+            #showAlert()
         print "INVALID"
 
 def hashText(text, salt):
     with open('salt.json', 'r') as db:
         db = json.load(db)
-        word = db.get(salt ,"")
-        return hmac.new(word, text, sha512).hexdigest()
+        word = db.get(str(salt) ,"")
+        #hashi = HMAC.new(word)
+        return str(HMAC.new(str(word),str(text),SHA256).hexdigest())
+        #return hmac.new(word, text, sha256).hexdigest()
         #return hashlib.sha512(text+word).hexdigest()
 
 def showAlert():
