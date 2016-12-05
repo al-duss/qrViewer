@@ -1,3 +1,4 @@
+from PIL import Image
 import cv2
 import datetime
 import hashlib
@@ -8,7 +9,6 @@ import qrtools
 import sys
 import time
 import urllib2
-from PIL import Image
 
 alarm = 0
 
@@ -37,8 +37,8 @@ def decode_qr(path, minute, salt):
         db = json.load(db)
     time = str(minute)
     text = db.get(time, "")
-    #hashed = hashText(text, salt)
-    if (text == qr.data):
+    hashed = hashText(text, salt)
+    if (hashed == qr.data):
         alarm = 0
         print "VALID"
     else:
@@ -53,7 +53,7 @@ def hashText(text, salt):
     with open('salt.json', 'r') as db:
         db = json.load(db)
         word = db.get(salt ,"")
-        return hashlib.sha512(text+word)
+        return hashlib.sha512(text+word).hexdigest()
 
 def showAlert():
     alert = Image.open("alert.jpg")
