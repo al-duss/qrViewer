@@ -1,7 +1,8 @@
 from PIL import Image
 import cv2
 import datetime
-import hashlib
+from hashlib import sha512
+import hmac
 import json
 import numpy as np
 import os
@@ -53,7 +54,8 @@ def hashText(text, salt):
     with open('salt.json', 'r') as db:
         db = json.load(db)
         word = db.get(salt ,"")
-        return hashlib.sha512(text+word).hexdigest()
+        return hmac.new(word, text, sha512).hexdigest()
+        #return hashlib.sha512(text+word).hexdigest()
 
 def showAlert():
     alert = Image.open("alert.jpg")
