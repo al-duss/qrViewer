@@ -15,7 +15,7 @@ def sendJSON():
         generateHash.newData()
     with open('data.json') as data_file:
         data = json.load(data_file)
-    return jsonify(**data)
+        return jsonify(**data)
 
 if __name__ == '__main__':
     app.run()

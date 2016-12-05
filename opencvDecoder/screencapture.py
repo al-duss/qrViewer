@@ -10,10 +10,13 @@ import time
 import urllib2
 from PIL import Image
 
-def take_screenshot(counter, frame, minute, salt, alarm):
+alarm = 0
+
+
+def take_screenshot(counter, frame, minute, salt):
     file_name = str(counter) + "qr.jpg"
     cv2.imwrite(file_name, frame)
-    decode_qr(file_name, minute, salt, alarm)
+    decode_qr(file_name, minute, salt)
     os.remove(file_name)
 
 def getDB():
@@ -21,11 +24,11 @@ def getDB():
     opener = urllib2.build_opener()
     f = opener.open(req)
     data = json.loads(f.read())
-    #print(data)
     with open('db.json', 'w') as outfile:
         json.dump(data,outfile)
 
-def decode_qr(path, minute, salt, alarm):
+def decode_qr(path, minute, salt):
+    global alarm
     qr = qrtools.QR()
     qr.decode(path)
     print qr.data
@@ -34,13 +37,13 @@ def decode_qr(path, minute, salt, alarm):
         db = json.load(db)
     time = str(minute)
     text = db.get(time, "")
-    hashed = hashText(text, salt)
-
-    if hashed == qr.data:
+    #hashed = hashText(text, salt)
+    if (text == qr.data):
         alarm = 0
         print "VALID"
     else:
         alarm += 1
+        print alarm
         if (alarm > 2):
             alarm = 0
             showAlert()
@@ -62,7 +65,6 @@ def main():
     newDB = datetime.datetime.now().replace(minute=0, second=0, microsecond=0)
     cap = cv2.VideoCapture(0)
     current_minute = 0
-    alarm = 0
 
     while(True):
         # Capture frame-by-frame
@@ -82,7 +84,7 @@ def main():
             salt = int((now-d).total_seconds()/60)%2657
             current_minute = now.second
             img_prefix = int(time.time() * 1000)
-            take_screenshot(img_prefix, frame, now.minute, salt, alarm)
+            take_screenshot(img_prefix, frame, now.minute, salt)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             print "Exiting..."

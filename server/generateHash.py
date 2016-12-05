@@ -9,7 +9,7 @@ def generateHash():
 def newData():
     data = {}
     for i in range(60):
-    data[i] = generateHash()
+        data[i] = generateHash()
 
 	with open('data.json', 'w') as outfile:
 		json.dump(data,outfile)
